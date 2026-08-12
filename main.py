@@ -30,6 +30,8 @@ class Entity:
 
 
 def player_turn(player: Entity, monster: Entity, deck: list[Card]):
+    mana = 3
+    print(f"Player's mana({mana})")
     print(f"Player ({player.life}) - Monster ({monster.life})")
     print("What do you want to do?")
     for card_number, card in enumerate(deck):
@@ -41,13 +43,18 @@ def player_turn(player: Entity, monster: Entity, deck: list[Card]):
         print("Invalid command, chosing first card")
         decision = 0
     card_chosen = deck[decision]
-    if card_chosen.type_ == "Attack":
-        monster.life -= card_chosen.damage
-    if card_chosen.type_ == "Skill":
-        player.shield += card_chosen.shield
+    if card_chosen.mana > mana:
+        print("You don't have enough mana")
+    else:
+        if card_chosen.type_ == "Attack":
+            mana -= card_chosen.mana
+            monster.life -= card_chosen.damage
+        if card_chosen.type_ == "Skill":
+            mana -= card_chosen.mana
+            player.shield += card_chosen.shield
 
 deck = [
-    Card(mana=1, damage=6, shield=0, name="Strike", type_="Attack"),
+    Card(mana=4, damage=6, shield=0, name="Strike", type_="Attack"),
     Card(mana=1, damage=0, shield=5, name="Defend", type_="Skill"),
 ]
 player = Entity(name="Player", life=100, deck=deck, shield=0)
