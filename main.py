@@ -1,92 +1,27 @@
-from typing import Self
+import random
+from battle import Battle
+from card import Card
+from entity import Entity
 
-
-class Card:
-    def __init__(self, mana, damage, name, shield, type_):
-        self.mana = mana
-        self.damage = damage
-        self.shield = shield
-        self.name = name
-        self.type_ = type_
-
-    def __str__(self) -> str:
-        return f"{self.name}"
-
-
-class Entity:
-    def __init__(self, name: str, life: int, deck: list[Card], shield: int):
-        self.name = name
-        self.life = life
-        self.deck = deck
-        self.shield = shield
-        self.weak = 0
-        self.vulnerable = 0
-
-    def hit(self, damage, target: Self):
-        vulnerable_modifier = 1
-        # vulnerable_modifier = 1 + (int(target.is_vulnerable) * 0.5) - (self.is_weak * (2/3))
-        target.life -= (damage * vulnerable_modifier) - target.shield
-
-
-
-def player_turn(player: Entity, monster: Entity, deck: list[Card]):
-    mana = 3
-    print(f"Player's mana({mana})")
-    print(f"Player ({player.life}) - Monster ({monster.life})")
-    print("What do you want to do?")
-    for card_number, card in enumerate(deck):
-        print(f"{card_number} -- ({card})")
-
-    try:
-        decision = int(input())
-    except (TypeError, ValueError):
-        print("Invalid command, chosing first card")
-        decision = 0
-    card_chosen = deck[decision]
-    if card_chosen.mana > mana:
-        print("You don't have enough mana")
-    else:
-        if card_chosen.type_ == "Attack":
-            mana -= card_chosen.mana
-            monster.life -= card_chosen.damage
-        if card_chosen.type_ == "Skill":
-            mana -= card_chosen.mana
-            player.shield += card_chosen.shield
 
 deck = [
-    Card(mana=4, damage=6, shield=0, name="Strike", type_="Attack"),
-    Card(mana=1, damage=0, shield=5, name="Defend", type_="Skill"),
+    Card(mana=1, damage=6, shield=0, name="Strike", type_="Attack", vulnerable=0),
+    Card(mana=1, damage=6, shield=0, name="Strike", type_="Attack", vulnerable=0),
+    Card(mana=1, damage=6, shield=0, name="Strike", type_="Attack", vulnerable=0),
+    Card(mana=1, damage=6, shield=0, name="Strike", type_="Attack", vulnerable=0),
+    Card(mana=1, damage=0, shield=5, name="Defend", type_="Skill", vulnerable=0),
+    Card(mana=1, damage=0, shield=5, name="Defend", type_="Skill", vulnerable=0),
+    Card(mana=1, damage=0, shield=5, name="Defend", type_="Skill", vulnerable=0),
+    Card(mana=1, damage=0, shield=5, name="Defend", type_="Skill", vulnerable=0),
+    Card(mana=2, damage=10, shield=0, name="Bash", type_="Attack", vulnerable=2),
+]
+rng = random.Random(42)
+rng.shuffle(deck)
+monster_deck = [
+    Card(mana=0, damage=5, name="Card Monster", shield=0, type_="Attack", vulnerable=0),
 ]
 player = Entity(name="Player", life=100, deck=deck, shield=0)
-monster = Entity(name="Monster", life=100, deck=[], shield=0)
-def turno(index: int):
-    print(f"Turno: {index}")
+monster = Entity(name="Monster", life=100, deck=monster_deck, shield=0)
+battle = Battle(player=player, enemy=monster)
 
-    # turn_reset
-    entities = [player, monster]
-
-    for entity in entities:
-        entity.shield = 0
-        if entity.weak:
-            entity.weak -= 1
-        if entity.vulnerable:
-            entity.vulnerable -= 1
-
-    player_turn(player=player, monster=monster, deck=deck)
-    print("*" * 50)
-    # monster turn
-    monster.hit(damage=5, target=player)
-
-turn = 1
-while player.life > 0 and monster.life > 0:
-    turno(turn)
-    turn += 1
-
-if player.life > 0:
-    vencedor = player.name
-elif monster.life > 0:
-    vencedor = monster.name
-else:
-    vencedor = "Empate"
-
-print(f"Vencedor: {vencedor}")
+battle.start()
