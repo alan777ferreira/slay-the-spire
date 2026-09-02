@@ -42,8 +42,8 @@ class Battle:
                 self.player.hit(card=card_chosen, target=self.enemy)
                 mana -= card_chosen.mana
             if card_chosen.type_ == "Skill":
-                mana -= card_chosen.mana
                 self.player.shield += card_chosen.shield
+                mana -= card_chosen.mana
         while hand:
             self.discard_pile.append(hand.pop())
 
@@ -52,14 +52,13 @@ class Battle:
 
         # turn_reset
         entities = [self.player, self.enemy]
-        self.player_turn()
-
         for entity in entities:
             entity.shield = 0
             if entity.weak:
                 entity.weak -= 1
             if entity.vulnerable:
                 entity.vulnerable -= 1
+        self.player_turn()
 
         print("*" * 50)
         # monster turn
