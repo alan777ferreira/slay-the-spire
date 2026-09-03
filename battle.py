@@ -19,7 +19,7 @@ class Battle:
 
     def player_turn(self):
         hand = []
-        while len(hand) < 5:
+        while len(hand) <= 5:
             hand.append(self.draw_card())
 
         mana = 3
