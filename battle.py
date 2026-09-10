@@ -29,21 +29,25 @@ class Battle:
         for card_number, card in enumerate(hand):
             print(f"{card_number} -- ({card})")
 
-        try:
-            decision = int(input())
-        except (TypeError, ValueError):
-            print("Invalid command, chosing first card")
-            decision = 0
-        card_chosen = hand[decision]
-        if card_chosen.mana > mana:
-            print("You don't have enough mana")
-        else:
-            if card_chosen.type_ == "Attack":
-                self.player.hit(card=card_chosen, target=self.enemy)
-                mana -= card_chosen.mana
-            if card_chosen.type_ == "Skill":
-                self.player.shield += card_chosen.shield
-                mana -= card_chosen.mana
+        while True:
+            try:
+                decision = int(input())
+            except (TypeError, ValueError):
+                print("Invalid command, chosing first card")
+                decision = 0
+            if decision == 0:
+                break
+            card_chosen = hand[decision]
+            if card_chosen.mana > mana:
+                print("You don't have enough mana")
+            else:
+                if card_chosen.type_ == "Attack":
+                    self.player.hit(card=card_chosen, target=self.enemy)
+                    mana -= card_chosen.mana
+                if card_chosen.type_ == "Skill":
+                    self.player.shield += card_chosen.shield
+                    mana -= card_chosen.mana
+
         while hand:
             self.discard_pile.append(hand.pop())
 
