@@ -1,5 +1,5 @@
 class Card:
-    def __init__(self, mana, damage, name, shield, type_, vulnerable):
+    def __init__(self, mana, name, type_, vulnerable=0,damage=0, shield=0):
         self.mana = mana
         self.damage = damage
         self.shield = shield
